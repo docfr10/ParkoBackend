@@ -9,7 +9,7 @@ import java.time.ZoneOffset
 
 class JwtService {
     private val issuer = "parko-server"
-    private val jwtSecretKey = System.getenv("JWT_SERVER")
+    private val jwtSecretKey = System.getenv("JWT_SECRET")
     private val algorithm = Algorithm.HMAC512(jwtSecretKey)
 
     private val jwtVerifier: JWTVerifier = JWT.require(algorithm).withIssuer(issuer).build()

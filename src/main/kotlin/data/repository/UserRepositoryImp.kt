@@ -1,4 +1,4 @@
-package com.example.data.model.repository
+package com.example.data.repository
 
 import com.example.Database
 import com.example.data.model.tables.UserModel
@@ -26,7 +26,6 @@ class UserRepositoryImp : UserRepository {
                 table[password] = userModel.password
                 table[firstName] = userModel.firstName
                 table[lastName] = userModel.lastName
-                table[isActivated] = userModel.isActivated
             }
         }
     }
@@ -42,7 +41,6 @@ class UserRepositoryImp : UserRepository {
             password = row[UserTable.password],
             firstName = row[UserTable.firstName],
             lastName = row[UserTable.lastName],
-            isActivated = row[UserTable.isActivated]
         )
     }
 }

@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
-object ParkingTable : Table() {
+object ParkingTable : Table(name = "parking") {
     val id: Column<Int> = integer(name = "id").autoIncrement()
     val name: Column<String> = varchar(name = "name", length = 100)
     val address: Column<String> = varchar(name = "address", length = 100)

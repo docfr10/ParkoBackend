@@ -2,7 +2,7 @@ package com.example.domain.usecase
 
 import com.auth0.jwt.JWTVerifier
 import com.example.authentication.JwtService
-import com.example.data.model.repository.UserRepositoryImp
+import com.example.data.repository.UserRepositoryImp
 import com.example.data.model.tables.UserModel
 
 class UserUseCase(private val userRepositoryImp: UserRepositoryImp, private val jwtService: JwtService) {

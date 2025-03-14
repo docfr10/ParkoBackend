@@ -2,8 +2,8 @@ package com.example
 
 import com.example.Database.configureDatabases
 import com.example.authentication.JwtService
-import com.example.data.model.repository.ParkingRepositoryImp
-import com.example.data.model.repository.UserRepositoryImp
+import com.example.data.repository.ParkingRepositoryImp
+import com.example.data.repository.UserRepositoryImp
 import com.example.domain.usecase.ParkingUseCase
 import com.example.domain.usecase.UserUseCase
 import io.ktor.server.application.*
@@ -17,15 +17,13 @@ fun main() {
 
 fun Application.module() {
     val jwtService = JwtService()
-    val userRepositoryImp = UserRepositoryImp()
-    val parkingRepositoryImp = ParkingRepositoryImp()
 
-    val userUseCase = UserUseCase(userRepositoryImp = userRepositoryImp, jwtService = jwtService)
-    val parkingUseCase = ParkingUseCase(parkingRepositoryImp = parkingRepositoryImp)
+    val userUseCase = UserUseCase(userRepositoryImp = UserRepositoryImp(), jwtService = jwtService)
+    val parkingUseCase = ParkingUseCase(parkingRepositoryImp = ParkingRepositoryImp())
 
     configureDatabases()
     configureMonitoring()
     configureSerialization()
     configureSecurity(userUseCase = userUseCase)
-    // configureRouting()
+    configureRouting(userUseCase = userUseCase, parkingUseCase = parkingUseCase)
 }

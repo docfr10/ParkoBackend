@@ -1,4 +1,4 @@
-package com.example.data.model.repository
+package com.example.data.repository
 
 import com.example.Database
 import com.example.data.model.tables.ParkingModel
