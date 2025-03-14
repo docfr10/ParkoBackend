@@ -1,20 +1,14 @@
 package com.example
 
-import com.example.authentication.JwtService
-import com.example.data.model.repository.UserRepositoryImp
 import com.example.domain.usecase.UserUseCase
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 
-fun Application.configureSecurity() {
-    val jwtService = JwtService()
-    val userRepositoryImp = UserRepositoryImp()
-    val userUseCase = UserUseCase(userRepositoryImp = userRepositoryImp, jwtService = jwtService)
-
+fun Application.configureSecurity(userUseCase: UserUseCase) {
     authentication {
         jwt(name = "jwt") {
-            verifier(verifier = jwtService.getVerifier())
+            verifier(verifier = userUseCase.getGwtVerifier())
             realm = "Parko server"
             validate {
                 val userEmail = it.payload.getClaim("email").asString()
