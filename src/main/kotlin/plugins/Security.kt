@@ -1,4 +1,4 @@
-package com.example
+package com.example.plugins
 
 import com.example.domain.usecase.UserUseCase
 import io.ktor.server.application.*

@@ -1,11 +1,15 @@
 package com.example
 
-import com.example.Database.configureDatabases
+import com.example.plugins.Database.configureDatabases
 import com.example.authentication.JwtService
-import com.example.data.repository.ParkingRepositoryImp
-import com.example.data.repository.UserRepositoryImp
+import com.example.data.repositoryimp.ParkingRepositoryImp
+import com.example.data.repositoryimp.UserRepositoryImp
 import com.example.domain.usecase.ParkingUseCase
 import com.example.domain.usecase.UserUseCase
+import com.example.plugins.configureMonitoring
+import com.example.plugins.configureRouting
+import com.example.plugins.configureSecurity
+import com.example.plugins.configureSerialization
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*

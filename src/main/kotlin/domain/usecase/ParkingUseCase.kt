@@ -1,7 +1,7 @@
 package com.example.domain.usecase
 
 import com.example.data.model.tables.ParkingModel
-import com.example.data.repository.ParkingRepositoryImp
+import com.example.data.repositoryimp.ParkingRepositoryImp
 
 class ParkingUseCase(private val parkingRepositoryImp: ParkingRepositoryImp) {
     suspend fun getAllParks(): List<ParkingModel> = parkingRepositoryImp.getAllParks()

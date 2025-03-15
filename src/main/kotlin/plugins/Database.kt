@@ -1,4 +1,4 @@
-package com.example
+package com.example.plugins
 
 import com.example.data.model.tables.ParkingTable
 import com.example.data.model.tables.UserTable
