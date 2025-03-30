@@ -1,9 +1,9 @@
 package com.example.data.repositoryimp
 
-import com.example.plugins.Database
 import com.example.data.model.tables.UserModel
 import com.example.data.model.tables.UserTable
 import com.example.domain.repository.UserRepository
+import com.example.plugins.Database
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.selectAll
@@ -22,10 +22,10 @@ class UserRepositoryImp : UserRepository {
         Database.dbQuery {
             UserTable.insert { table ->
                 table[email] = userModel.email
-                table[login] = userModel.login
                 table[password] = userModel.password
                 table[firstName] = userModel.firstName
                 table[lastName] = userModel.lastName
+                table[isActivate] = userModel.isActivate
             }
         }
     }
@@ -37,10 +37,10 @@ class UserRepositoryImp : UserRepository {
         return UserModel(
             id = row[UserTable.id],
             email = row[UserTable.email],
-            login = row[UserTable.login],
             password = row[UserTable.password],
             firstName = row[UserTable.firstName],
             lastName = row[UserTable.lastName],
+            isActivate = row[UserTable.isActivate]
         )
     }
 }

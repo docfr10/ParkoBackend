@@ -9,6 +9,8 @@ class Constants {
     }
 
     object Success {
+        const val USER_REGISTERED = "User successfully registered!"
+
         const val PARKING_ADDED = "Parking added successfully!"
         const val PARKING_UPDATED = "Parking updated successfully!"
         const val PARKING_DELETED = "Parking deleted successfully!"

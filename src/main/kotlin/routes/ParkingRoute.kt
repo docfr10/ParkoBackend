@@ -13,7 +13,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 fun Route.parkingRoute(parkingUseCase: ParkingUseCase) {
-    authenticate("jwt") {
+    //authenticate("jwt") {
         get(path = "api/v1/get-all-parks") {
             try {
                 val parks = parkingUseCase.getAllParks()
@@ -110,5 +110,5 @@ fun Route.parkingRoute(parkingUseCase: ParkingUseCase) {
                 )
             }
         }
-    }
+    //}
 }

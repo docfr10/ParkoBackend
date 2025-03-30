@@ -26,21 +26,21 @@ fun Route.userRoute(userUseCase: UserUseCase) {
             val userModel = UserModel(
                 id = 0,
                 email = registerRequest.email.trim().lowercase(),
-                login = registerRequest.login.trim().lowercase(),
                 password = hashPassword(password = registerRequest.password.trim()),
                 firstName = registerRequest.firstName.trim(),
                 lastName = registerRequest.lastName.trim(),
+                isActivate = registerRequest.isActivate
             )
 
             userUseCase.insertUser(userModel = userModel)
             call.respond(
                 status = HttpStatusCode.OK,
-                BaseResponse(success = true, message = userUseCase.generateToken(userModel = userModel))
+                message = BaseResponse(success = true, message = Constants.Success.USER_REGISTERED)
             )
         } catch (e: Exception) {
             call.respond(
                 status = HttpStatusCode.Conflict,
-                BaseResponse(success = false, message = e.message ?: Constants.Error.GENERAL)
+                message = BaseResponse(success = false, message = e.message ?: Constants.Error.GENERAL)
             )
         }
     }
@@ -65,7 +65,7 @@ fun Route.userRoute(userUseCase: UserUseCase) {
 
                 foundUser.password == hashPassword(password = loginRequest.password) -> call.respond(
                     status = HttpStatusCode.OK,
-                    message = userUseCase.generateToken(userModel = foundUser)
+                    message = BaseResponse(success = true, message = userUseCase.generateToken(userModel = foundUser))
                 )
 
                 else -> call.respond(
