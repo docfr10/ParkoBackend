@@ -1,5 +1,6 @@
 package com.example.plugins
 
+import com.example.data.model.tables.FavoriteParkingTable
 import com.example.data.model.tables.ParkingTable
 import com.example.data.model.tables.UserTable
 import com.typesafe.config.ConfigFactory
@@ -31,7 +32,7 @@ object Database {
 
         // Create tables
         transaction {
-            SchemaUtils.create(tables = arrayOf(UserTable, ParkingTable))
+            SchemaUtils.create(tables = arrayOf(UserTable, ParkingTable, FavoriteParkingTable))
         }
     }
 

@@ -3,7 +3,7 @@ package com.example.domain.usecase
 import com.auth0.jwt.JWTVerifier
 import com.example.authentication.JwtService
 import com.example.data.repositoryimp.UserRepositoryImp
-import com.example.data.model.tables.UserModel
+import com.example.data.model.requests.UserModel
 
 class UserUseCase(private val userRepositoryImp: UserRepositoryImp, private val jwtService: JwtService) {
     suspend fun getUserByEmail(userEmail: String) = userRepositoryImp.getUserByEmail(userEmail = userEmail)

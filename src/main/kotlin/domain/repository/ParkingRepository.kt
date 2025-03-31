@@ -1,6 +1,6 @@
 package com.example.domain.repository
 
-import com.example.data.model.tables.ParkingModel
+import com.example.data.model.requests.ParkingModel
 
 interface ParkingRepository {
     suspend fun getAllParks(): List<ParkingModel>

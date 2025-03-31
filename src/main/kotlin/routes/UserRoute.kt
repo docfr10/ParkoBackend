@@ -4,7 +4,7 @@ import com.example.authentication.hashPassword
 import com.example.data.model.requests.LoginRequest
 import com.example.data.model.requests.UserRequest
 import com.example.data.model.response.BaseResponse
-import com.example.data.model.tables.UserModel
+import com.example.data.model.requests.UserModel
 import com.example.domain.usecase.UserUseCase
 import com.example.utils.Constants
 import io.ktor.http.*

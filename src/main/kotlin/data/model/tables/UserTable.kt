@@ -1,6 +1,5 @@
 package com.example.data.model.tables
 
-import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
@@ -14,13 +13,3 @@ object UserTable : Table(name = "user") {
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
-
-@Serializable
-data class UserModel(
-    val id: Int,
-    val email: String,
-    val password: String,
-    val firstName: String,
-    val lastName: String,
-    val isActivate: Boolean
-)

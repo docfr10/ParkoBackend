@@ -1,6 +1,5 @@
 package com.example.data.model.tables
 
-import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.Column
 import org.jetbrains.exposed.sql.Table
 
@@ -13,12 +12,3 @@ object ParkingTable : Table(name = "parking") {
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
-
-@Serializable
-data class ParkingModel(
-    val id: Int,
-    val name: String,
-    val address: String,
-    val description: String,
-    val parkingLots: Int
-)

@@ -1,6 +1,6 @@
 package com.example.domain.usecase
 
-import com.example.data.model.tables.ParkingModel
+import com.example.data.model.requests.ParkingModel
 import com.example.data.repositoryimp.ParkingRepositoryImp
 
 class ParkingUseCase(private val parkingRepositoryImp: ParkingRepositoryImp) {

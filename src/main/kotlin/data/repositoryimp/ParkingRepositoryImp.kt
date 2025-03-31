@@ -1,17 +1,15 @@
 package com.example.data.repositoryimp
 
-import com.example.plugins.Database
-import com.example.data.model.tables.ParkingModel
+import com.example.data.model.requests.ParkingModel
 import com.example.data.model.tables.ParkingTable
 import com.example.domain.repository.ParkingRepository
+import com.example.plugins.Database
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
 class ParkingRepositoryImp : ParkingRepository {
     override suspend fun getAllParks(): List<ParkingModel> =
-        Database.dbQuery {
-            ParkingTable.selectAll().mapNotNull { rowToParking(row = it) }
-        }
+        Database.dbQuery { ParkingTable.selectAll().mapNotNull { rowToParking(row = it) } }
 
     override suspend fun getParkingById(parkingId: Int): ParkingModel? =
         Database.dbQuery {

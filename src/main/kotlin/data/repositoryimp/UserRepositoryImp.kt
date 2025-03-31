@@ -1,6 +1,6 @@
 package com.example.data.repositoryimp
 
-import com.example.data.model.tables.UserModel
+import com.example.data.model.requests.UserModel
 import com.example.data.model.tables.UserTable
 import com.example.domain.repository.UserRepository
 import com.example.plugins.Database

@@ -14,5 +14,9 @@ class Constants {
         const val PARKING_ADDED = "Parking added successfully!"
         const val PARKING_UPDATED = "Parking updated successfully!"
         const val PARKING_DELETED = "Parking deleted successfully!"
+
+        const val FAVORITE_PARKING_ADDED = "Favorite parking added successfully!"
+        const val FAVORITE_PARKING_UPDATED = "Favorite parking updated successfully!"
+        const val FAVORITE_PARKING_DELETED = "Favorite parking deleted successfully!"
     }
 }

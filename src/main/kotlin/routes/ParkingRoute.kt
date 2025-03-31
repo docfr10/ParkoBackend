@@ -1,9 +1,9 @@
 package com.example.routes
 
 import com.example.data.model.requests.AddParkingRequest
+import com.example.data.model.requests.ParkingModel
 import com.example.data.model.requests.UpdateParkingRequest
 import com.example.data.model.response.BaseResponse
-import com.example.data.model.tables.ParkingModel
 import com.example.domain.usecase.ParkingUseCase
 import com.example.utils.Constants
 import io.ktor.http.*
@@ -22,6 +22,30 @@ fun Route.parkingRoute(parkingUseCase: ParkingUseCase) {
                 call.respond(
                     status = HttpStatusCode.Conflict,
                     message = BaseResponse(success = false, message = e.message ?: Constants.Error.GENERAL)
+                )
+            }
+        }
+
+        get(path = "api/v1/get-parking/") {
+            val parkingRequest = call.request.queryParameters["id"]?.toInt() ?: run {
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    BaseResponse(success = false, message = Constants.Error.MISSING_FIELDS)
+                )
+                return@get
+            }
+
+            try {
+                val parking = parkingUseCase.getParkingById(parkingId = parkingRequest)
+
+                call.respond(
+                    status = HttpStatusCode.OK,
+                    message = BaseResponse(success = true, message = parking.toString())
+                )
+            } catch (e: Exception) {
+                call.respond(
+                    HttpStatusCode.Conflict,
+                    BaseResponse(success = false, message = e.message ?: Constants.Error.GENERAL)
                 )
             }
         }

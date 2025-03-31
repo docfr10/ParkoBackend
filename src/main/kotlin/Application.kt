@@ -1,11 +1,13 @@
 package com.example
 
-import com.example.plugins.Database.configureDatabases
 import com.example.authentication.JwtService
+import com.example.data.repositoryimp.FavoriteParkingRepositoryImp
 import com.example.data.repositoryimp.ParkingRepositoryImp
 import com.example.data.repositoryimp.UserRepositoryImp
+import com.example.domain.usecase.FavoriteParkingUseCase
 import com.example.domain.usecase.ParkingUseCase
 import com.example.domain.usecase.UserUseCase
+import com.example.plugins.Database.configureDatabases
 import com.example.plugins.configureMonitoring
 import com.example.plugins.configureRouting
 import com.example.plugins.configureSecurity
@@ -24,10 +26,15 @@ fun Application.module() {
 
     val userUseCase = UserUseCase(userRepositoryImp = UserRepositoryImp(), jwtService = jwtService)
     val parkingUseCase = ParkingUseCase(parkingRepositoryImp = ParkingRepositoryImp())
+    val favoriteParkingUseCase = FavoriteParkingUseCase(favoriteParkingRepositoryImp = FavoriteParkingRepositoryImp())
 
     configureDatabases()
     configureMonitoring()
     configureSerialization()
     configureSecurity(userUseCase = userUseCase)
-    configureRouting(userUseCase = userUseCase, parkingUseCase = parkingUseCase)
+    configureRouting(
+        userUseCase = userUseCase,
+        parkingUseCase = parkingUseCase,
+        favoriteParkingUseCase = favoriteParkingUseCase
+    )
 }
