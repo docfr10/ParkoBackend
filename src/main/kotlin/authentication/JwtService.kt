@@ -4,8 +4,6 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.example.data.model.requests.UserModel
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 class JwtService {
     private val issuer = "parko-server"
@@ -19,7 +17,6 @@ class JwtService {
             .withSubject("ParkoAppAuthentication")
             .withIssuer(issuer)
             .withClaim("email", userModel.email)
-            .withExpiresAt(LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.UTC))
             .sign(algorithm)
 
     fun getVerifier(): JWTVerifier = jwtVerifier
