@@ -24,16 +24,15 @@ fun main() {
 fun Application.module() {
     val jwtService = JwtService()
 
-    val userUseCase = UserUseCase(userRepositoryImp = UserRepositoryImp())
+    val userUseCase = UserUseCase(userRepositoryImp = UserRepositoryImp(), jwtService = jwtService)
     val parkingUseCase = ParkingUseCase(parkingRepositoryImp = ParkingRepositoryImp())
     val favoriteParkingUseCase = FavoriteParkingUseCase(favoriteParkingRepositoryImp = FavoriteParkingRepositoryImp())
 
     configureDatabases()
     configureMonitoring()
     configureSerialization()
-    configureSecurity(jwtService = jwtService, userUseCase = userUseCase)
+    configureSecurity(userUseCase = userUseCase)
     configureRouting(
-        jwtService = jwtService,
         userUseCase = userUseCase,
         parkingUseCase = parkingUseCase,
         favoriteParkingUseCase = favoriteParkingUseCase

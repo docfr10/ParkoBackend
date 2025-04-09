@@ -9,6 +9,7 @@ object UserTable : Table(name = "user") {
     val password: Column<String> = varchar(name = "password", length = 50)
     val firstName: Column<String> = varchar(name = "first_name", length = 30)
     val lastName: Column<String> = varchar(name = "last_name", length = 30)
+    val isActivate: Column<Boolean> = bool(name = "is_activate")
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }

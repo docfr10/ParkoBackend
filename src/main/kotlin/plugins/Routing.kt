@@ -1,6 +1,5 @@
 package com.example.plugins
 
-import com.example.authentication.JwtService
 import com.example.domain.usecase.FavoriteParkingUseCase
 import com.example.domain.usecase.ParkingUseCase
 import com.example.domain.usecase.UserUseCase
@@ -13,11 +12,10 @@ import io.ktor.server.routing.*
 fun Application.configureRouting(
     userUseCase: UserUseCase,
     parkingUseCase: ParkingUseCase,
-    favoriteParkingUseCase: FavoriteParkingUseCase,
-    jwtService: JwtService
+    favoriteParkingUseCase: FavoriteParkingUseCase
 ) {
     routing {
-        userRoute(jwtService = jwtService, userUseCase = userUseCase)
+        userRoute(userUseCase = userUseCase)
         parkingRoute(parkingUseCase = parkingUseCase)
         favoriteParkingRoute(favoriteParkingUseCase = favoriteParkingUseCase)
     }
