@@ -8,22 +8,19 @@ data class UserModel(
     val email: String,
     val password: String,
     val firstName: String,
-    val lastName: String,
-    val isActivate: Boolean
+    val lastName: String
 )
 
 @Serializable
-data class UserRequest(
+data class RegisterRequest(
     val email: String,
     val password: String,
     val firstName: String,
-    val lastName: String,
-    val isActivate: Boolean = false
+    val lastName: String
 )
 
 @Serializable
 data class LoginRequest(
     val email: String,
-    val password: String,
-    val isActivate: Boolean
+    val password: String
 )

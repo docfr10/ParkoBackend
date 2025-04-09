@@ -2,9 +2,9 @@ package com.example.routes
 
 import com.example.authentication.hashPassword
 import com.example.data.model.requests.LoginRequest
-import com.example.data.model.requests.UserRequest
-import com.example.data.model.response.BaseResponse
+import com.example.data.model.requests.RegisterRequest
 import com.example.data.model.requests.UserModel
+import com.example.data.model.response.BaseResponse
 import com.example.domain.usecase.UserUseCase
 import com.example.utils.Constants
 import io.ktor.http.*
@@ -14,7 +14,7 @@ import io.ktor.server.routing.*
 
 fun Route.userRoute(userUseCase: UserUseCase) {
     post(path = "api/v1/signup") {
-        val registerRequest = call.receiveNullable<UserRequest>() ?: run {
+        val registerRequest = call.receiveNullable<RegisterRequest>() ?: run {
             call.respond(
                 status = HttpStatusCode.BadRequest,
                 message = BaseResponse(success = false, message = Constants.Error.GENERAL)
@@ -28,8 +28,7 @@ fun Route.userRoute(userUseCase: UserUseCase) {
                 email = registerRequest.email.trim().lowercase(),
                 password = hashPassword(password = registerRequest.password.trim()),
                 firstName = registerRequest.firstName.trim(),
-                lastName = registerRequest.lastName.trim(),
-                isActivate = registerRequest.isActivate
+                lastName = registerRequest.lastName.trim()
             )
 
             userUseCase.insertUser(userModel = userModel)
