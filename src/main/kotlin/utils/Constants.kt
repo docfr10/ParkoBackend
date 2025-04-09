@@ -5,6 +5,8 @@ class Constants {
         const val GENERAL = "Something went wrong!"
         const val WRONG_EMAIL = "Wrong email address!"
         const val INCORRECT_PASSWORD = "Incorrect password!"
+        const val INCORRECT_TOKEN = "Incorrect token!"
+        const val USER_NOT_FOUND_BY_TOKEN = "User not found by token!"
         const val MISSING_FIELDS = "Missing some fields"
     }
 

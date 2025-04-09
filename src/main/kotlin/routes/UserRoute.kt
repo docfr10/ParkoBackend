@@ -1,10 +1,13 @@
 package com.example.routes
 
+import com.auth0.jwt.JWT
+import com.example.authentication.JwtService
 import com.example.authentication.hashPassword
 import com.example.data.model.requests.LoginRequest
+import com.example.data.model.requests.UserModel
 import com.example.data.model.requests.UserRequest
 import com.example.data.model.response.BaseResponse
-import com.example.data.model.requests.UserModel
+import com.example.data.model.response.TokenResponse
 import com.example.domain.usecase.UserUseCase
 import com.example.utils.Constants
 import io.ktor.http.*
@@ -12,7 +15,7 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
-fun Route.userRoute(userUseCase: UserUseCase) {
+fun Route.userRoute(jwtService: JwtService, userUseCase: UserUseCase) {
     post(path = "api/v1/signup") {
         val registerRequest = call.receiveNullable<UserRequest>() ?: run {
             call.respond(
@@ -29,7 +32,6 @@ fun Route.userRoute(userUseCase: UserUseCase) {
                 password = hashPassword(password = registerRequest.password.trim()),
                 firstName = registerRequest.firstName.trim(),
                 lastName = registerRequest.lastName.trim(),
-                isActivate = registerRequest.isActivate
             )
 
             userUseCase.insertUser(userModel = userModel)
@@ -55,23 +57,55 @@ fun Route.userRoute(userUseCase: UserUseCase) {
         }
 
         try {
-            val foundUser = userUseCase.getUserByEmail(userEmail = loginRequest.email.trim().lowercase())
+            if (!loginRequest.refreshToken.isNullOrBlank()) {
+                if (!jwtService.isRefreshTokenValid(loginRequest.refreshToken)) {
+                    call.respond(
+                        status = HttpStatusCode.Unauthorized,
+                        message = BaseResponse(success = false, message = Constants.Error.INCORRECT_TOKEN)
+                    )
+                    return@post
+                } else {
+                    val foundUserByToken = userUseCase.getUserByEmail(
+                        userEmail = JWT.decode(loginRequest.refreshToken).getClaim("email").toString()
+                    ) ?: run {
+                        call.respond(
+                            status = HttpStatusCode.BadRequest,
+                            message = BaseResponse(success = false, message = Constants.Error.USER_NOT_FOUND_BY_TOKEN)
+                        )
+                        return@post
+                    }
 
-            when {
-                foundUser == null -> call.respond(
-                    status = HttpStatusCode.BadRequest,
-                    message = BaseResponse(success = false, message = Constants.Error.WRONG_EMAIL)
-                )
+                    call.respond(
+                        status = HttpStatusCode.OK,
+                        message = TokenResponse(
+                            accessToken = jwtService.generateAccessToken(foundUserByToken),
+                            refreshToken = jwtService.generateRefreshToken(foundUserByToken)
+                        )
+                    )
+                    return@post
+                }
+            } else {
+                val foundUser = userUseCase.getUserByEmail(userEmail = loginRequest.email.trim().lowercase())
 
-                foundUser.password == hashPassword(password = loginRequest.password) -> call.respond(
-                    status = HttpStatusCode.OK,
-                    message = BaseResponse(success = true, message = userUseCase.generateToken(userModel = foundUser))
-                )
+                when {
+                    foundUser == null -> call.respond(
+                        status = HttpStatusCode.BadRequest,
+                        message = BaseResponse(success = false, message = Constants.Error.WRONG_EMAIL)
+                    )
 
-                else -> call.respond(
-                    status = HttpStatusCode.BadRequest,
-                    message = BaseResponse(success = false, message = Constants.Error.INCORRECT_PASSWORD)
-                )
+                    foundUser.password == hashPassword(password = loginRequest.password) -> call.respond(
+                        status = HttpStatusCode.OK,
+                        message = TokenResponse(
+                            accessToken = jwtService.generateAccessToken(foundUser),
+                            refreshToken = jwtService.generateRefreshToken(foundUser)
+                        )
+                    )
+
+                    else -> call.respond(
+                        status = HttpStatusCode.BadRequest,
+                        message = BaseResponse(success = false, message = Constants.Error.INCORRECT_PASSWORD)
+                    )
+                }
             }
         } catch (e: Exception) {
             call.respond(

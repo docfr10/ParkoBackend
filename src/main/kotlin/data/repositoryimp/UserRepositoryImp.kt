@@ -25,7 +25,6 @@ class UserRepositoryImp : UserRepository {
                 table[password] = userModel.password
                 table[firstName] = userModel.firstName
                 table[lastName] = userModel.lastName
-                table[isActivate] = userModel.isActivate
             }
         }
     }
@@ -40,7 +39,6 @@ class UserRepositoryImp : UserRepository {
             password = row[UserTable.password],
             firstName = row[UserTable.firstName],
             lastName = row[UserTable.lastName],
-            isActivate = row[UserTable.isActivate]
         )
     }
 }

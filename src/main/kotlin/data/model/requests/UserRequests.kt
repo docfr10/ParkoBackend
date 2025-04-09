@@ -9,7 +9,6 @@ data class UserModel(
     val password: String,
     val firstName: String,
     val lastName: String,
-    val isActivate: Boolean
 )
 
 @Serializable
@@ -18,12 +17,11 @@ data class UserRequest(
     val password: String,
     val firstName: String,
     val lastName: String,
-    val isActivate: Boolean = false
 )
 
 @Serializable
 data class LoginRequest(
     val email: String,
     val password: String,
-    val isActivate: Boolean
+    val refreshToken: String? = null
 )

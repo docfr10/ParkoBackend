@@ -1,16 +1,10 @@
 package com.example.domain.usecase
 
-import com.auth0.jwt.JWTVerifier
-import com.example.authentication.JwtService
-import com.example.data.repositoryimp.UserRepositoryImp
 import com.example.data.model.requests.UserModel
+import com.example.data.repositoryimp.UserRepositoryImp
 
-class UserUseCase(private val userRepositoryImp: UserRepositoryImp, private val jwtService: JwtService) {
+class UserUseCase(private val userRepositoryImp: UserRepositoryImp) {
     suspend fun getUserByEmail(userEmail: String) = userRepositoryImp.getUserByEmail(userEmail = userEmail)
 
     suspend fun insertUser(userModel: UserModel) = userRepositoryImp.insertUser(userModel = userModel)
-
-    fun generateToken(userModel: UserModel): String = jwtService.generateToken(userModel = userModel)
-
-    fun getGwtVerifier(): JWTVerifier = jwtService.getVerifier()
 }
