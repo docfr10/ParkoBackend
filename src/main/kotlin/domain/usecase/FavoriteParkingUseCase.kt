@@ -1,10 +1,14 @@
 package com.example.domain.usecase
 
 import com.example.data.model.requests.FavoriteParkingModel
+import com.example.data.model.requests.ParkingModel
 import com.example.data.repositoryimp.FavoriteParkingRepositoryImp
 
 class FavoriteParkingUseCase(private val favoriteParkingRepositoryImp: FavoriteParkingRepositoryImp) {
     suspend fun getAllFavoriteParks(): List<FavoriteParkingModel> = favoriteParkingRepositoryImp.getAllFavoriteParks()
+
+    suspend fun getFavoriteParksByUserId(userId: Int): List<ParkingModel> =
+        favoriteParkingRepositoryImp.getFavoriteParksByUserId(userId = userId)
 
     suspend fun getFavoriteParkingById(userId: Int, parkingId: Int): FavoriteParkingModel? =
         favoriteParkingRepositoryImp.getFavoriteParkingById(userId = userId, parkingId = parkingId)

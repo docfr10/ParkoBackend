@@ -1,6 +1,8 @@
 package com.example.routes
 
 import com.example.data.model.requests.FavoriteParkingModel
+import com.example.data.model.requests.FavoriteParkingRequest
+import com.example.data.model.requests.UserModel
 import com.example.data.model.response.BaseResponse
 import com.example.domain.usecase.FavoriteParkingUseCase
 import com.example.utils.Constants
@@ -13,8 +15,15 @@ import io.ktor.server.routing.*
 fun Route.favoriteParkingRoute(favoriteParkingUseCase: FavoriteParkingUseCase) {
     authenticate("jwt") {
         get(path = "api/v1/get-all-favorite-parks") {
+            val user = call.principal<UserModel>() ?: run {
+                call.respond(
+                    HttpStatusCode.Unauthorized,
+                    BaseResponse(success = false, message = Constants.Error.GENERAL)
+                )
+                return@get
+            }
             try {
-                val favoriteParks = favoriteParkingUseCase.getAllFavoriteParks()
+                val favoriteParks = favoriteParkingUseCase.getFavoriteParksByUserId(userId = user.id)
                 call.respond(status = HttpStatusCode.OK, message = favoriteParks)
             } catch (e: Exception) {
                 call.respond(
@@ -23,122 +32,73 @@ fun Route.favoriteParkingRoute(favoriteParkingUseCase: FavoriteParkingUseCase) {
                 )
             }
         }
-    }
 
-    get(path = "api/v1/get-favorite-parking") {
-        val userId = call.parameters["userId"]?.toIntOrNull() ?: run {
-            call.respond(
-                HttpStatusCode.BadRequest,
-                BaseResponse(success = false, message = Constants.Error.GENERAL)
-            )
-            return@get
-        }
-        val parkingId = call.parameters["parkingId"]?.toIntOrNull() ?: run {
-            call.respond(
-                HttpStatusCode.BadRequest,
-                BaseResponse(success = false, message = Constants.Error.GENERAL)
-            )
-            return@get
-        }
+        post(path = "api/v1/create-favorite-parking") {
+            val user = call.principal<UserModel>() ?: run {
+                call.respond(
+                    HttpStatusCode.Unauthorized,
+                    BaseResponse(success = false, message = Constants.Error.GENERAL)
+                )
+                return@post
+            }
+            val request = call.receiveNullable<FavoriteParkingRequest>() ?: run {
+                call.respond(
+                    status = HttpStatusCode.BadRequest,
+                    message = BaseResponse(success = false, message = Constants.Error.MISSING_FIELDS)
+                )
+                return@post
+            }
 
-        try {
-            val parking = favoriteParkingUseCase.getFavoriteParkingById(userId = userId, parkingId = parkingId)
-
-            call.respond(
-                status = HttpStatusCode.OK,
-                message = BaseResponse(success = true, message = parking.toString())
-            )
-        } catch (e: Exception) {
-            call.respond(
-                HttpStatusCode.Conflict,
-                BaseResponse(success = false, message = e.message ?: Constants.Error.GENERAL)
-            )
-        }
-    }
-
-    post(path = "api/v1/create-favorite-parking") {
-        val addFavoriteParkingRequest = call.receiveNullable<FavoriteParkingModel>() ?: run {
-            call.respond(
-                status = HttpStatusCode.BadRequest,
-                message = BaseResponse(success = false, message = Constants.Error.MISSING_FIELDS)
-            )
-            return@post
+            try {
+                favoriteParkingUseCase.insertFavoriteParking(
+                    favoriteParkingModel = FavoriteParkingModel(
+                        userId = user.id,
+                        parkingId = request.parkingId
+                    )
+                )
+                call.respond(
+                    status = HttpStatusCode.OK,
+                    message = BaseResponse(success = true, message = Constants.Success.FAVORITE_PARKING_ADDED)
+                )
+            } catch (e: Exception) {
+                call.respond(
+                    status = HttpStatusCode.Conflict,
+                    BaseResponse(success = false, message = e.message ?: Constants.Error.GENERAL)
+                )
+            }
         }
 
-        try {
-            val favoriteParkingModel = FavoriteParkingModel(
-                userId = addFavoriteParkingRequest.userId,
-                parkingId = addFavoriteParkingRequest.parkingId
-            )
+        delete(path = "api/v1/delete-favorite-parking") {
+            val user = call.principal<UserModel>() ?: run {
+                call.respond(
+                    HttpStatusCode.Unauthorized,
+                    BaseResponse(success = false, message = Constants.Error.GENERAL)
+                )
+                return@delete
+            }
+            val request = call.receiveNullable<FavoriteParkingRequest>() ?: run {
+                call.respond(
+                    status = HttpStatusCode.BadRequest,
+                    message = BaseResponse(success = false, message = Constants.Error.MISSING_FIELDS)
+                )
+                return@delete
+            }
 
-            favoriteParkingUseCase.insertFavoriteParking(favoriteParkingModel = favoriteParkingModel)
-            call.respond(
-                status = HttpStatusCode.OK,
-                message = BaseResponse(success = true, message = Constants.Success.FAVORITE_PARKING_ADDED)
-            )
-        } catch (e: Exception) {
-            call.respond(
-                status = HttpStatusCode.Conflict,
-                BaseResponse(success = false, message = e.message ?: Constants.Error.GENERAL)
-            )
-        }
-    }
-
-    post(path = "api/v1/update-favorite-parking") {
-        val updateFavoriteParkingRequest = call.receiveNullable<FavoriteParkingModel>() ?: run {
-            call.respond(
-                status = HttpStatusCode.OK,
-                message = BaseResponse(success = false, message = Constants.Error.MISSING_FIELDS)
-            )
-            return@post
-        }
-
-        try {
-            val updateFavoriteParkingModel = FavoriteParkingModel(
-                userId = updateFavoriteParkingRequest.userId,
-                parkingId = updateFavoriteParkingRequest.parkingId
-            )
-
-            favoriteParkingUseCase.updateFavoriteParking(
-                userId = updateFavoriteParkingRequest.userId,
-                parkingId = updateFavoriteParkingModel.parkingId,
-                favoriteParkingModel = updateFavoriteParkingModel
-            )
-            call.respond(
-                status = HttpStatusCode.OK,
-                message = BaseResponse(success = true, message = Constants.Success.FAVORITE_PARKING_UPDATED)
-            )
-        } catch (e: Exception) {
-            call.respond(
-                status = HttpStatusCode.Conflict,
-                BaseResponse(success = false, message = e.message ?: Constants.Error.GENERAL)
-            )
-        }
-    }
-
-    delete(path = "api/v1/delete-favorite-parking") {
-        val deleteFavoriteParkingRequest = call.receiveNullable<FavoriteParkingModel>() ?: run {
-            call.respond(
-                status = HttpStatusCode.OK,
-                message = BaseResponse(success = false, message = Constants.Error.MISSING_FIELDS)
-            )
-            return@delete
-        }
-
-        try {
-            favoriteParkingUseCase.deleteFavoriteParking(
-                userId = deleteFavoriteParkingRequest.userId,
-                parkingId = deleteFavoriteParkingRequest.parkingId
-            )
-            call.respond(
-                status = HttpStatusCode.OK,
-                message = BaseResponse(success = true, message = Constants.Success.FAVORITE_PARKING_DELETED)
-            )
-        } catch (e: Exception) {
-            call.respond(
-                status = HttpStatusCode.Conflict,
-                BaseResponse(success = false, message = e.message ?: Constants.Error.GENERAL)
-            )
+            try {
+                favoriteParkingUseCase.deleteFavoriteParking(
+                    userId = user.id,
+                    parkingId = request.parkingId
+                )
+                call.respond(
+                    status = HttpStatusCode.OK,
+                    message = BaseResponse(success = true, message = Constants.Success.FAVORITE_PARKING_DELETED)
+                )
+            } catch (e: Exception) {
+                call.respond(
+                    status = HttpStatusCode.Conflict,
+                    BaseResponse(success = false, message = e.message ?: Constants.Error.GENERAL)
+                )
+            }
         }
     }
 }

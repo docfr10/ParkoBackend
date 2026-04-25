@@ -1,7 +1,9 @@
 package com.example.data.repositoryimp
 
 import com.example.data.model.requests.FavoriteParkingModel
+import com.example.data.model.requests.ParkingModel
 import com.example.data.model.tables.FavoriteParkingTable
+import com.example.data.model.tables.ParkingTable
 import com.example.domain.repository.FavoriteParkingRepository
 import com.example.plugins.Database
 import org.jetbrains.exposed.sql.*
@@ -49,6 +51,22 @@ class FavoriteParkingRepositoryImp : FavoriteParkingRepository {
             })
         }
     }
+
+    override suspend fun getFavoriteParksByUserId(userId: Int): List<ParkingModel> =
+        Database.dbQuery {
+            (FavoriteParkingTable innerJoin ParkingTable)
+                .selectAll()
+                .where { FavoriteParkingTable.userId eq userId }
+                .mapNotNull { row ->
+                    ParkingModel(
+                        id = row[ParkingTable.id],
+                        name = row[ParkingTable.name],
+                        address = row[ParkingTable.address],
+                        description = row[ParkingTable.description],
+                        parkingLots = row[ParkingTable.parkingLots],
+                    )
+                }
+        }
 
     private fun rowToFavoriteParking(row: ResultRow?): FavoriteParkingModel? {
         if (row == null)

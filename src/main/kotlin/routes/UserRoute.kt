@@ -8,6 +8,7 @@ import com.example.data.model.response.BaseResponse
 import com.example.domain.usecase.UserUseCase
 import com.example.utils.Constants
 import io.ktor.http.*
+import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -77,6 +78,19 @@ fun Route.userRoute(userUseCase: UserUseCase) {
                 status = HttpStatusCode.Conflict,
                 message = BaseResponse(success = false, message = e.message ?: Constants.Error.GENERAL)
             )
+        }
+    }
+
+    authenticate("jwt") {
+        get("api/v1/me") {
+            val principal = call.principal<UserModel>() ?: run {
+                call.respond(
+                    HttpStatusCode.Unauthorized,
+                    BaseResponse(success = false, message = Constants.Error.GENERAL)
+                )
+                return@get
+            }
+            call.respond(HttpStatusCode.OK, principal.copy(password = ""))
         }
     }
 }

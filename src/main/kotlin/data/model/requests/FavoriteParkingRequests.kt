@@ -7,3 +7,6 @@ data class FavoriteParkingModel(
     val userId: Int,
     val parkingId: Int
 )
+
+@Serializable
+data class FavoriteParkingRequest(val parkingId: Int)
